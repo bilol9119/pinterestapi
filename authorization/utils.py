@@ -36,4 +36,5 @@ def send_otp_via_email(email, otp_code):
                                 username=settings.EMAIL_HOST_USER,
                                 password=settings.EMAIL_HOST_PASSWORD,
                                 use_tls=settings.EMAIL_USE_TLS)
-    EmailMessage(subject, message, email_from, recipient_list, connection=connection).send()
+    EmailMessage(subject, message, email_from, recipient_list,
+                 connection=connection).send()
