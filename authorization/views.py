@@ -6,6 +6,7 @@ from django.contrib.auth.hashers import make_password
 
 from .models import User
 from .serializers import UserSerializer
+from .utils import validate_password
 
 
 class AuthenticationViewSet(ViewSet):
@@ -26,3 +27,15 @@ class AuthenticationViewSet(ViewSet):
                                   'refresh': str(token)}, status=status.HTTP_200_OK)
         return Response(data={"error": "password is incorrect", 'ok': False},
                         status=status.HTTP_400_BAD_REQUEST)
+
+    def register(self, request, *args, **kwargs):
+        email = request.data.get('email')
+        password = request.data.get('password')
+        serializer = UserSerializer(data={"email": email,
+                                          'password': make_password(password)})
+        if not serializer.is_valid():
+            return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+        if validate_password(password):
+            serializer.save()
+            return Response({"ok": "ok"}, status=status.HTTP_200_OK)
+        return Response({"error": "please enter valid password"})
