@@ -34,9 +34,10 @@ class User(AbstractUser):
 
 
 class OTP(BaseModel):
-    otp_key = models.UUIDField(default=uuid.uuid4())
+    otp_key = models.UUIDField(default=uuid.uuid4)
     otp_code = models.IntegerField(default=otp_code_generator)
     otp_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    otp_attempt = models.IntegerField(default=0)
 
     def __str__(self):
         return str(self.created_at)

@@ -1,5 +1,6 @@
 import re
-from rest_framework.exceptions import ValidationError
+from django.core.mail import EmailMessage, get_connection
+from django.conf import settings
 import random
 
 
@@ -10,7 +11,7 @@ def otp_code_generator():
 def pronouns_validator(word):
     pattern = r'^[a-z]{2,5}/[a-z]{2,5}$'
     if not re.match(pattern, word):
-        return
+        return False
     return True
 
 
@@ -23,3 +24,16 @@ def validate_password(string):
     if not re.match(pattern, string):
         return False
     return True
+
+
+def send_otp_via_email(email, otp_code):
+    subject = "Code for one time registration!"
+    message = f"Your code is {otp_code}"
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [email]
+    connection = get_connection(host=settings.EMAIL_HOST,
+                                port=settings.EMAIL_PORT,
+                                username=settings.EMAIL_HOST_USER,
+                                password=settings.EMAIL_HOST_PASSWORD,
+                                use_tls=settings.EMAIL_USE_TLS)
+    EmailMessage(subject, message, email_from, recipient_list, connection=connection).send()
