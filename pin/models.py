@@ -22,6 +22,10 @@ class FIleValidator:
 class Board(BaseModel):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=200)
+    description = models.TextField(blank=True, null=True)
+
+    keep_secret = models.BooleanField(default=False)
+    collaborators = models.ManyToManyField(User, blank=True, related_name="Collaborators")
 
     def __str__(self):
         return self.name
