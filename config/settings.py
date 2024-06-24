@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     # apps
     'base',
     'authorization',
+    'pin'
 
 ]
 
