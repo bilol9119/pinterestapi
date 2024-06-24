@@ -36,11 +36,13 @@ class AuthenticationViewSet(ViewSet):
         if not serializer.is_valid():
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
         if validate_password(password):
-            serializer.save()
             otp_obj = OTP.objects.create(otp_user=serializer.instance)
             otp_obj.save()
-            send_otp_via_email(email, otp_obj.otp_code)
-            return Response({"otp_key": otp_obj.otp_key}, status=status.HTTP_200_OK)
+            if send_otp_via_email(email, otp_obj.otp_code):
+                serializer.save()
+                return Response({"otp_key": otp_obj.otp_key}, status=status.HTTP_200_OK)
+            otp_obj.delete()
+            return Response({"error": "Error while sending otp code!"}, status.HTTP_400_BAD_REQUEST)
         return Response({"error": "please enter valid password"})
 
     def verify_register(self, request, *args, **kwargs):
