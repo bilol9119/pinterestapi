@@ -23,9 +23,15 @@ class Board(BaseModel):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=200)
 
+    def __str__(self):
+        return self.name
 
-class Tag(Board):
-    pass
+
+class Tag(BaseModel):
+    name = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.name
 
 
 class Pin(BaseModel):
@@ -35,8 +41,11 @@ class Pin(BaseModel):
     external_link = models.URLField(blank=True, null=True)
 
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    board = models.ForeignKey(Board, on_delete=models.SET_NULL, blank=True, null=True)
-    tagged_topics = models.ManyToManyField(Tag, blank=True)
+    board = models.ForeignKey(Board, on_delete=models.SET_NULL, blank=True, null=True, related_name="For_board")
+    tagged_topics = models.ManyToManyField(Tag, blank=True, related_name="For_tags")
 
     allow_comment = models.BooleanField(default=True)
     show_similar_products = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.user

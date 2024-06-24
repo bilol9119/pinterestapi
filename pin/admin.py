@@ -1,3 +1,7 @@
 from django.contrib import admin
+from .models import Pin, Board, Tag
 
-# Register your models here.
+admin.site.register(Board)
+admin.site.register(Pin)
+admin.site.register(Tag)
+
